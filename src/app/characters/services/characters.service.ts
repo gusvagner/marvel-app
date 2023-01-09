@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 export class CharactersService extends BaseService {
   private url = "characters?";
 
+
   constructor(protected httpClient: HttpClient) {
     super(httpClient);
   }
@@ -17,12 +18,19 @@ export class CharactersService extends BaseService {
     return this.get<any[]>(`${this.url}`);
   }
 
-  getOrderedCharactersByName(name: string, orderBy: string): Observable<any> {
+  getOrderedCharacters(name: string, orderBy: string): Observable<any> {
     let nameStartsWith = `&nameStartsWith=${name}`;
     if (name === '') nameStartsWith = '';
     let order = `orderBy=${orderBy}`;
     return this.get<any[]>(`${this.url}${order}${nameStartsWith}`);
   }
 
+  searchCharacters(name: string, orderBy: string, offset: number = 0): Observable<any> {
+    let nameStartsWith = `&nameStartsWith=${name}`;
+    if (name === '') nameStartsWith = '';
+    let order = `orderBy=${orderBy}`;
+    let offsetValue = `&offset=${offset}`;
+    return this.get<any[]>(`${this.url}${order}${nameStartsWith}${offsetValue}`);
+  }
 
 }

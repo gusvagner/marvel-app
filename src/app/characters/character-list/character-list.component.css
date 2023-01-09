@@ -53,3 +53,7 @@
 .characters-container p {
   color: #202020;
 }
+
+.pagination {
+  text-align: center;
+}

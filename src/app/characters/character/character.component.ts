@@ -1,4 +1,4 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { Character } from '../models/character.model';
 
@@ -12,10 +12,12 @@ export class CharacterComponent {
   public disabledCheckbox: boolean = false;
 
   @Input() public character: Character;
+  @ViewChild('star', { static: true }) star: ElementRef;
 
   @HostListener("click", ["$event"])
-  onCLick(event: MouseEvent) {
-    if (this.disabledCheckbox && !this.character.favorite) event.preventDefault();
+  onClick() {
+    if (this.disabledCheckbox && !this.character.favorite)
+      this.star.nativeElement.checked = false;
   }
 
   constructor(private localStorageService: LocalStorageService) { }
@@ -26,7 +28,7 @@ export class CharacterComponent {
       return;
     }
     if (this.maxNumberOfFavoritesAchieved()) {
-      this.disabledCheckbox = true;
+      this.disableCheckbox(this.character.favorite);
       console.log("Max number of favorites selected");
       return;
     }
@@ -44,8 +46,9 @@ export class CharacterComponent {
     return false;
   }
 
-  disableCheckbox(): void {
-    this.disabledCheckbox = true;
+  disableCheckbox(value: any): void {
+    if (!value)
+      this.disabledCheckbox = true;
   }
 
 }

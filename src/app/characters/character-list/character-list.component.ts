@@ -14,6 +14,10 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
 export class CharacterListComponent implements OnInit {
   public characters: Character[];
   public formGroup: FormGroup;
+  public currentPage = 1;
+  public totalItems = 0;
+  public limit = 0;
+  public offset = 0;
 
   constructor(
     private charactersService: CharactersService,
@@ -33,31 +37,47 @@ export class CharacterListComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
-    this.getOrderedCharactersByName(this.formGroup.value['name'], this.formGroup.value['orderBy']);
-  }
-
   getCharacters() {
     this.charactersService.getCharacters().subscribe(result => {
-      this.characters = result.data.results;
+      console.log(result);
+      this.getResults(result);
     });
   }
 
-  getOrderedCharactersByName(name: string, orderBy: string) {
-    this.charactersService.getOrderedCharactersByName(name, orderBy).subscribe(result => {
-      this.characters = result.data.results;
-    });
-  }
-
-  searchCharacters(event: any) {
-    let characterName = event.target.value;
-    this.charactersService.getOrderedCharactersByName(characterName, this.formGroup.value['orderBy']).subscribe(result => {
-      this.characters = result.data.results;
+  searchCharacters() {
+    if (this.formGroup.value['orderBy'] === 'favorites') {
+      this.orderByFavorites();
+      return;
+    }
+    this.charactersService.searchCharacters(this.formGroup.value['name'], this.formGroup.value['orderBy']).subscribe(result => {
+      this.getResults(result);
     });
   }
 
   clearAllFavorites(): void {
     this.localStorageService.clear();
+  }
+
+  getPaginatedCharacters(currentPage: number) {
+    let characterName = this.formGroup.value['name'];
+    let orderBy = this.formGroup.value['orderBy'];
+    this.currentPage = currentPage;
+    this.offset = this.currentPage * this.limit;
+    this.charactersService.searchCharacters(characterName, orderBy, this.offset).subscribe(result => {
+      this.characters = result.data.results;
+    });
+  }
+
+  getResults(result: any) {
+    this.totalItems = result.data.total;
+    this.limit = result.data.limit;
+    this.characters = result.data.results;
+  }
+
+  orderByFavorites() {
+    if (this.localStorageService.getTotal() === 0) return;
+    const favoritesFirst = this.characters.sort((a, b) => Number(!a.favorite) - Number(!b.favorite));
+    this.characters = favoritesFirst;
   }
 
 }

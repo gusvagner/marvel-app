@@ -5,7 +5,7 @@
     class="star"
     type="checkbox"
     title="set the character as favorite"
-    [(ngModel)]="character.favorite"
+    [checked]="character.favorite"
     (click)="setFavorite(character)"
-    [disabled]="disabledCheckbox">
+    #star>
 </div>

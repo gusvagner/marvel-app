@@ -5,6 +5,7 @@ import { CharacterListComponent } from './character-list/character-list.componen
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CharacterRoutingModule } from './character.route';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { CharacterRoutingModule } from './character.route';
     HttpClientModule,
     ReactiveFormsModule,
     CharacterRoutingModule,
-    FormsModule
+    FormsModule,
+    NgxPaginationModule
   ]
 })
 export class CharacterModule { }

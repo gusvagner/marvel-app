@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IBaseService } from './interface/Ibase.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -12,7 +12,7 @@ export class BaseService implements IBaseService {
   private apiKey: string;
   private hash: string;
   private timestamp: string;
-  private limitOfItems = '10';
+  private limitPerPage = 10;
 
   constructor(protected httpClient: HttpClient) {
     this.baseUrl = environment.apiUrl;
@@ -22,7 +22,7 @@ export class BaseService implements IBaseService {
   }
 
   private getEndPoint(url: string): string {
-    return `${this.baseUrl}${url}&apikey=${this.apiKey}&hash=${this.hash}&ts=${this.timestamp}&offset=${this.limitOfItems}`;
+    return `${this.baseUrl}${url}&apikey=${this.apiKey}&hash=${this.hash}&ts=${this.timestamp}&limit=${this.limitPerPage}`;
   }
 
   get<TClass>(url: string): Observable<TClass> {
