@@ -1,0 +1,15 @@
+<div class="home">
+  <form class="search" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <input type="text" placeholder="Pesquisar por nome" formControlName="name" (keyup)="searchCharacters($event)">
+    <label for="orderBy">Ordenar por:</label>
+    <select name="orderBy" id="orderBy" title="orderBy" formControlName="orderBy">
+      <option value="favorites">Favoritos</option>
+      <option value="name">Nome</option>
+      <option value="modified">Modificado</option>
+    </select>
+    <!-- <button type="submit">Pesquisar</button> -->
+  </form>
+  <div class="characters-container" *ngFor="let character of characters">
+    <app-character [character]="character"></app-character>
+  </div>
+</div>

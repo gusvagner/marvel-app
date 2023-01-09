@@ -1,0 +1,11 @@
+<div class="character">
+  <img alt="image of the character" src="{{character.thumbnail.path}}.{{character.thumbnail.extension}}"/>
+  <strong>{{ character.name }}</strong>
+  <input
+    class="star"
+    type="checkbox"
+    title="set the character as favorite"
+    [(ngModel)]="character.favorite"
+    (click)="setFavorite(character)"
+    [disabled]="disabledCheckbox">
+</div>
