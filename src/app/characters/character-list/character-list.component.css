@@ -1,8 +1,8 @@
-.home {
+.character-list {
   max-width: 650px;
   margin: 0 auto;
   padding: 0 30px;
-  margin-top: 80px;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -34,20 +34,6 @@
   width: 100px;
   border-radius: 3px;
   margin-left: auto;
-}
-
-.search button {
-  display: none;
-  margin-left: auto;
-  height: 35px;
-  background: #e62429;
-  width: 110px;
-  font-weight: bold;
-  font-size: 14px;
-  color: #fff;
-  border: 0;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 .characters-container p {

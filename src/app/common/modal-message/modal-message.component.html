@@ -1,0 +1,8 @@
+<div class="modal" [ngStyle]="modalStyle()">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <h3 class="modal-title">{{ title }}</h3>
+    <p class="message">{{ message }}</p>
+    <button (click)="closeModal()">Fechar</button>
+  </div>
+</div>

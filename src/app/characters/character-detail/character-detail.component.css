@@ -1,0 +1,59 @@
+.content {
+  display: flex;
+}
+
+.character-image {
+  height: 100%;
+  width: 100%;
+}
+
+.image-box {
+  height: 500px;
+  width: 500px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10px 5px 10px;
+}
+
+.data {
+  display: flex;
+}
+
+.description {
+  min-height: 77px;
+}
+
+.stories {
+  width: auto;
+  margin-right: 25px;
+}
+
+.series {
+  width: auto;
+  margin-right: 25px;
+}
+
+.data ul {
+  list-style: none;
+  overflow-y: auto;
+  max-height: 330px;
+}
+
+.urls {
+  margin-top: 10px;
+}
+
+.urls a {
+  margin-right: 10px;
+  color: black;
+}
+
+.star {
+  float: right;
+  cursor: auto;
+  color: #ff8c8f
+}
+

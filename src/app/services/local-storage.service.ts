@@ -30,4 +30,8 @@ export class LocalStorageService {
     return this.storage.length;
   }
 
+  getList(): Storage {
+    return this.storage;
+  }
+
 }

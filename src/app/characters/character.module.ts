@@ -6,11 +6,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CharacterRoutingModule } from './character.route';
 import { NgxPaginationModule } from 'ngx-pagination';
-
+import { CharacterDetailComponent } from './character-detail/character-detail.component';
+import { MyCommonModule } from '../common/common.module';
 @NgModule({
   declarations: [
     CharacterComponent,
-    CharacterListComponent
+    CharacterListComponent,
+    CharacterDetailComponent,
   ],
   imports: [
     CommonModule,
@@ -18,7 +20,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     ReactiveFormsModule,
     CharacterRoutingModule,
     FormsModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    MyCommonModule
   ]
 })
 export class CharacterModule { }

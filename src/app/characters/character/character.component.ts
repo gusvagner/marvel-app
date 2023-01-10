@@ -1,4 +1,5 @@
-import { Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, Output, ViewChild } from '@angular/core';
+import { ModalMessageComponent } from 'src/app/common/modal-message/modal-message.component';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { Character } from '../models/character.model';
 
@@ -12,43 +13,49 @@ export class CharacterComponent {
   public disabledCheckbox: boolean = false;
 
   @Input() public character: Character;
+  @Output() public panelClick = new EventEmitter<any>();
   @ViewChild('star', { static: true }) star: ElementRef;
+  @ViewChild('modalMessage', { static: true }) modalMessage: ModalMessageComponent;
 
   @HostListener("click", ["$event"])
-  onClick() {
+  public onClick() {
     if (this.disabledCheckbox && !this.character.favorite)
       this.star.nativeElement.checked = false;
   }
 
   constructor(private localStorageService: LocalStorageService) { }
 
-  setFavorite(character: Character) {
+  public setFavorite(character: Character): void {
     if (this.character.favorite) {
       this.unsetFavorite(character);
       return;
     }
     if (this.maxNumberOfFavoritesAchieved()) {
       this.disableCheckbox(this.character.favorite);
-      console.log("Max number of favorites selected");
+      this.modalMessage.openModal();
       return;
     }
     character.favorite = true;
     this.localStorageService.set(String(character.id), character.favorite);
   }
 
-  unsetFavorite(character: Character) {
+  private unsetFavorite(character: Character) {
     character.favorite = false;
     this.localStorageService.remove(String(character.id));
   }
 
-  maxNumberOfFavoritesAchieved(): boolean {
+  private maxNumberOfFavoritesAchieved(): boolean {
     if (this.maxNumberOfFavorites === this.localStorageService.getTotal()) return true;
     return false;
   }
 
-  disableCheckbox(value: any): void {
+  private disableCheckbox(value: any): void {
     if (!value)
       this.disabledCheckbox = true;
+  }
+
+  public click(): void {
+    this.panelClick.emit();
   }
 
 }

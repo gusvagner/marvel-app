@@ -1,0 +1,9 @@
+<div class="modal" [ngStyle]="modalStyle()">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ title }}</h2>
+    </div>
+    <span class="close" (click)="closeModal()">&times;</span>
+    <ng-content></ng-content>
+  </div>
+</div>

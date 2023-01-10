@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { Character } from '../models/character.model';
+import { Component, ComponentFactory, ComponentFactoryResolver, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { CharactersService } from '../services/characters.service';
 import { FormBuilder } from '@angular/forms';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { Source } from '../models/source.model';
+import { CharacterDetailComponent } from '../character-detail/character-detail.component';
+import { Character } from '../models/character.model';
 
 @Component({
   selector: 'app-character-list',
@@ -12,17 +13,19 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
   styleUrls: ['./character-list.component.css']
 })
 export class CharacterListComponent implements OnInit {
-  public characters: Character[];
+  public source = new Source();
   public formGroup: FormGroup;
   public currentPage = 1;
-  public totalItems = 0;
-  public limit = 0;
-  public offset = 0;
+
+  @ViewChild('characterDetail', { read: ViewContainerRef, static: true })
+  public characterDetail: ViewContainerRef;
+  public characterDetailRef: ComponentRef<CharacterDetailComponent>;
 
   constructor(
     private charactersService: CharactersService,
-    private FormBuilder: FormBuilder,
-    private localStorageService: LocalStorageService) { }
+    private formBuilder: FormBuilder,
+    private localStorageService: LocalStorageService,
+    private componentFactoryResolver: ComponentFactoryResolver) { }
 
   ngOnInit(): void {
     this.getCharacters();
@@ -30,54 +33,86 @@ export class CharacterListComponent implements OnInit {
     this.clearAllFavorites();
   }
 
-  configureForm(): void {
-    this.formGroup = this.FormBuilder.group({
+  private configureForm(): void {
+    this.formGroup = this.formBuilder.group({
       name: [''],
       orderBy: ['name']
     });
   }
 
-  getCharacters() {
+  private getCharacters(): void {
     this.charactersService.getCharacters().subscribe(result => {
-      console.log(result);
-      this.getResults(result);
+      this.source = result.data;
     });
   }
 
-  searchCharacters() {
-    if (this.formGroup.value['orderBy'] === 'favorites') {
+  public searchCharacters(): void {
+    if (this.getFormValue('orderBy') === 'favorites') {
       this.orderByFavorites();
       return;
     }
-    this.charactersService.searchCharacters(this.formGroup.value['name'], this.formGroup.value['orderBy']).subscribe(result => {
-      this.getResults(result);
+    this.charactersService.searchCharacters(this.getFormValue('name'), this.getFormValue('orderBy')).subscribe(result => {
+      this.source = result.data;
+      this.setSelectedFavorites();
     });
   }
 
-  clearAllFavorites(): void {
+  private clearAllFavorites(): void {
     this.localStorageService.clear();
   }
 
-  getPaginatedCharacters(currentPage: number) {
-    let characterName = this.formGroup.value['name'];
-    let orderBy = this.formGroup.value['orderBy'];
+  public getPaginatedCharacters(currentPage: number): void {
+    let characterName = this.getFormValue('name');
+    let orderBy = this.getFormValue('orderBy');
     this.currentPage = currentPage;
-    this.offset = this.currentPage * this.limit;
-    this.charactersService.searchCharacters(characterName, orderBy, this.offset).subscribe(result => {
-      this.characters = result.data.results;
+    this.source.offset = this.currentPage * this.source.limit;
+    this.charactersService.searchCharacters(characterName, orderBy, this.source.offset).subscribe(result => {
+      this.source = result.data;
     });
   }
 
-  getResults(result: any) {
-    this.totalItems = result.data.total;
-    this.limit = result.data.limit;
-    this.characters = result.data.results;
+  private orderByFavorites() {
+    if (this.localStorageService.getTotal() === 0) return;
+    const favoritesFirst = this.source.results.sort((a, b) => Number(!a.favorite) - Number(!b.favorite));
+    this.source.results = favoritesFirst;
   }
 
-  orderByFavorites() {
-    if (this.localStorageService.getTotal() === 0) return;
-    const favoritesFirst = this.characters.sort((a, b) => Number(!a.favorite) - Number(!b.favorite));
-    this.characters = favoritesFirst;
+  private getFormValue(fieldName: string): any {
+    return this.formGroup.value[fieldName];
+  }
+
+  public showDetails(id: number) {
+    let character = new Character();
+    this.charactersService.getCharacterById(id).subscribe(result => {
+      this.localStorageService.get(String(character.id));
+      character = result.data.results[0];
+      character.favorite = this.checkFavorite(id);
+      this.createCharacterDetailComponent();
+      this.characterDetailRef.instance.character = character;
+      this.characterDetailRef.instance.openModal();
+    });
+  }
+
+  private createCharacterDetailComponent() {
+    const factory: ComponentFactory<CharacterDetailComponent> = this.componentFactoryResolver.resolveComponentFactory(CharacterDetailComponent);
+    this.characterDetailRef = this.characterDetail.createComponent(factory);
+  }
+
+  private setSelectedFavorites() {
+    let favorites = this.localStorageService.getList();
+    if (favorites.length === 0) return;
+    for (const favoriteId in favorites) {
+      for (let i = 0; i < this.source.results.length; i++) {
+        const element = this.source.results[i];
+        if (favoriteId === String(element.id))
+          this.source.results[i].favorite = true;
+      }
+    }
+  }
+
+  private checkFavorite(characterId: number): boolean {
+    let favorite = this.localStorageService.get(String(characterId));
+    return favorite ? true : false;
   }
 
 }

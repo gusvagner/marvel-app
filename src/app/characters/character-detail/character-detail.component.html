@@ -1,0 +1,49 @@
+<div class="modal" [ngStyle]="modalStyle()">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" (click)="closeModal()">&times;</span>
+      <h2 class="modal-title">{{ character.name }}</h2>
+      <input
+      type="checkbox"
+      class="star"
+      title="set the character as favorite"
+      [checked]="character.favorite"
+      disabled>
+    </div>
+    <div class="content">
+      <div class="image-box">
+        <img alt="image of the character" class="character-image" src="{{character.thumbnail.path}}.{{character.thumbnail.extension}}"/>
+      </div>
+      <div class="info">
+        <div class="description">
+          <strong>Descrição</strong>
+          <p>{{ character.description }}</p>
+        </div>
+        <div class="data">
+          <div class="stories">
+            <strong>Histórias ({{ character.stories.available }})</strong>
+            <ul>
+              <li *ngFor="let item of character.stories.items">{{ item.name }}</li>
+            </ul>
+          </div>
+          <div class="series">
+            <strong>Séries ({{ character.series.available }})</strong>
+            <ul>
+              <li *ngFor="let item of character.series.items">{{ item.name }}</li>
+            </ul>
+          </div>
+          <div class="events">
+            <strong>Eventos ({{ character.events.available }})</strong>
+            <ul>
+              <li *ngFor="let item of character.events.items">{{ item.name }}</li>
+            </ul>
+          </div>
+        </div>
+        <div class="urls">
+          <strong>Mais informações:</strong><br>
+            <a *ngFor="let item of character.urls" [href]="item.url" target="_blank">{{ item.type }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

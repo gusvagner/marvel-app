@@ -1,0 +1,15 @@
+.modal-content {
+  width: 420px;
+  text-align: center;
+  padding: 0 10px 15px 10px;
+}
+
+.modal-title {
+  color: #202020;
+}
+
+.message {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+

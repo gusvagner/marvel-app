@@ -1,6 +1,8 @@
 <div class="character">
-  <img alt="image of the character" src="{{character.thumbnail.path}}.{{character.thumbnail.extension}}"/>
-  <strong>{{ character.name }}</strong>
+  <div class="panel" (click)="click()">
+    <img alt="image of the character" src="{{character.thumbnail.path}}.{{character.thumbnail.extension}}"/>
+    <strong>{{ character.name }}</strong>
+  </div>
   <input
     class="star"
     type="checkbox"
@@ -9,3 +11,8 @@
     (click)="setFavorite(character)"
     #star>
 </div>
+<app-modal-message
+  #modalMessage
+  title="Atenção!"
+  message="Já existem 5 personagens selecionados como favoritos!">
+</app-modal-message>
