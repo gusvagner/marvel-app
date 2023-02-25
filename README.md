@@ -1,5 +1,7 @@
-# MarvelApp
+# Description
+This is a simple app to check Marvel Heroes and set them as favourites. 
 
+# MarvelApp
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.0.
 
 ## Development server
